@@ -5,7 +5,6 @@ namespace App\Services\Transference\Notification;
 use App\Models\User;
 use Exception;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 

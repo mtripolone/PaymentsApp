@@ -4,7 +4,6 @@ namespace App\Services\Transference\Authorization;
 
 use Exception;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizeService

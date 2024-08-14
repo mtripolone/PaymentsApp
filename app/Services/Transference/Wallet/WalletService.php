@@ -6,7 +6,6 @@ use App\Jobs\NotificationJob;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Wallet\WalletRepository;
 use App\Services\Transference\Authorization\AuthorizeService;
-use App\Services\Transference\Notification\NotificationService;
 use App\Services\Transference\User\Rules\ProfileRule;
 use App\Services\Transference\User\Rules\WalletBalanceRule;
 use App\Services\Transference\User\Transactions\ExpensesService;
@@ -24,7 +23,6 @@ class WalletService
         private InvoceService $invoceService,
         private ExpensesService $expensesService,
         private WalletRepository $walletRepository,
-        private NotificationService $notification,
     ) {
     }
 

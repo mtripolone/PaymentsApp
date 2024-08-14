@@ -11,9 +11,9 @@ class WalletRepository implements WalletRepositoryContract
     ) {
     }
 
-    public function findOrFail(int $id): Wallet
+    public function findOrFail(int $walletId): Wallet
     {
-        return  $this->model->findOrFail($id);
+        return  $this->model->findOrFail($walletId);
     }
 
     public function findByUserId(int $userId): Wallet

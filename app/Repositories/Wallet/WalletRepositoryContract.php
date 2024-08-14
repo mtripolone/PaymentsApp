@@ -6,7 +6,7 @@ use App\Models\Wallet;
 
 interface WalletRepositoryContract
 {
-    public function findOrFail(int $id): Wallet;
+    public function findOrFail(int $walletId): Wallet;
 
     public function findByUserId(int $userId): Wallet;
 
