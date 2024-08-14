@@ -45,5 +45,13 @@ make start
 http://localhost:8005
 ```
 
+### Teste
+
+* Para rodar o teste, pode utilizar o comando abaixo.
+
+```
+make test
+```
+
 By - Matheus Tripolone
 # Payments

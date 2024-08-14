@@ -5,6 +5,7 @@ namespace App\Services\Transference\Notification;
 use App\Models\User;
 use Exception;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,10 +16,10 @@ class NotificationService
         try {
             $client = new Client();
             $client->request('POST', config('services.notification.address'));
-            return $this-> sendNotification($payee, $message);
+            return $this->sendNotification($payee, $message);
         } catch (Exception $e) {
             $this->sendNotification($payee, "Envio de notificação indisponivel!");
-            throw new Exception('Não foi possivel enviar a notificação!', Response::HTTP_SERVICE_UNAVAILABLE);
+            throw new Exception('Não foi possivel enviar a notificação!', Response::HTTP_SERVICE_UNAVAILABLE, $e);
         }
     }
 

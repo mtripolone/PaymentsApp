@@ -6,6 +6,7 @@ use App\Jobs\NotificationJob;
 use App\Repositories\User\UserRepository;
 use App\Repositories\Wallet\WalletRepository;
 use App\Services\Transference\Authorization\AuthorizeService;
+use App\Services\Transference\Notification\NotificationService;
 use App\Services\Transference\User\Rules\ProfileRule;
 use App\Services\Transference\User\Rules\WalletBalanceRule;
 use App\Services\Transference\User\Transactions\ExpensesService;
@@ -23,6 +24,7 @@ class WalletService
         private InvoceService $invoceService,
         private ExpensesService $expensesService,
         private WalletRepository $walletRepository,
+        private NotificationService $notification,
     ) {
     }
 
@@ -40,18 +42,15 @@ class WalletService
 
             $this->authService->transferAuthorizator();
             
-            //$payer->wallet->balance -= $transfer['value'];
-            //$payer->wallet->save();
             $this->walletRepository->decreaseBalance($payer->id, $transfer['value']);
             $this->invoceService->saveInvoceTransaction($transfer['value'], $payer, $payee);
 
             $this->walletRepository->increaseBalance($payee->id, $transfer['value']);
             $this->expensesService->saveExpensesTransaction($transfer['value'], $payer, $payee);
-
+           
             DB::commit();
         } catch (Exception $e) {
             DB::rollback();
-
             throw $e;
         }
 

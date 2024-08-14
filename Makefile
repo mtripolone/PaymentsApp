@@ -21,3 +21,6 @@ stop:
 
 logs:
 	docker compose logs -f
+
+test:
+	docker exec app-payments php artisan test
