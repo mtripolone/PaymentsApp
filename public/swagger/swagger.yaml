@@ -1,0 +1,338 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: "Wallet Transfer API"
+  description: |-
+    Esta é uma api de teste destinada ao desenvolvimento de um projeto de Transferências Bancárias
+  license:
+    name: MIT
+  contact:
+    name: Matheus Tripolone
+    email: matheusrtripolone@gmail.com
+servers:
+  - url: "http://localhost:8005/api"
+    description: "Api de Dev"
+tags:
+  - name: User
+    description: "Responsável por `Criar Token`, `Efetuar login`"
+  - name: Transactions
+    description: "Responsável por `Realizar Transferências`"
+paths:
+  /register:
+      post:
+        tags:
+          - User
+        summary: Registra uma Novo Usuário
+        description: 'Responsável por adicionar um novo Usuário,
+        se o Usuário já existir, retorna um erro.
+        A `Confirmação de Password` é necessária para registar um novo usuário.
+        O sistema diferencia os usuários pelo tipo podendo ser `user` ou `retailer`.'
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserRegister'
+        responses:
+          '200':
+            description: 'Usuário Cadastrado com Sucesso'
+            content:
+              'application/json':
+                schema:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      $ref: '#/components/schemas/UserResponse'
+                    token:
+                      type: string
+
+          '422':
+            description: 'Erro ao adicionar Usuário'
+            content:
+              'application/json':
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: 'Mensagem de erro'
+                    errors:
+                      type: array
+                      items:
+                        type: string
+                        description: 'Erros'
+  /login:
+      post:
+        tags:
+          - User
+        summary: Logar no usuário
+        description: 'Responsável por Logar no usuário,
+        O Usuário deve ser passado no corpo da requisição no formato JSON.'
+        requestBody:
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UserLogin'
+        responses:
+          '200':
+            description: 'Login Efetuado com Sucesso'
+            content:
+              'application/json':
+                schema:
+                  type: object
+                  properties:
+                    user:
+                      type: object
+                      $ref: '#/components/schemas/UserResponse'
+                    token:
+                      type: string
+          '422':
+            description: 'Erro ao Logar no usuário'
+            content:
+              'application/json':
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: 'Mensagem de erro'
+                    errors:
+                      type: array
+                      items:
+                        type: string
+                        description: 'Erros'
+  /transaction:
+    post:
+      tags:
+        - Transactions
+      summary: Efetua uma transferêcia
+      security:
+        - BearerAuth: []
+      description: 'Efetua uma transferência'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                payer:
+                  type: integer
+                  description: 'Conta de origem'
+                  example: 1
+                value:
+                  type: number
+                  description: 'Valor da transferencia'
+                  example: 100
+                payee:
+                  type: integer
+                  description: 'Conta de destino'
+                  example: 2
+      responses:
+        '200':
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 'Transaction success'
+
+        '500':
+          description: Bad request
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 'Transaction success'
+
+  /payday:
+    post:
+      tags:
+        - Transactions
+      summary: Insere Dinheiro na Wallet
+      security:
+        - BearerAuth: []
+      description: 'Inserir dinheiro na wallet'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                wallet:
+                  type: integer
+                  description: 'Usuário para transferência'
+                  example: 1
+                payday:
+                  type: number
+                  description: 'Valor da transferência'
+                  example: 100
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 'Transaction success'
+
+        '500':
+          description: Bad request
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 'Transaction success'
+
+  /statement:
+    post:
+      tags:
+        - Transactions
+      summary: Verifica o extrato do usuário
+      security:
+        - BearerAuth: []
+      description: 'Verificar extrato do usuário'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                wallet:
+                  type: integer
+                  description: 'Carteira do Usuário'
+                  example: 1
+
+      responses:
+        '200':
+          description: successful operation
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 'Transaction success'
+
+        '500':
+          description: Bad request
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 'Transaction success'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    UserRegister:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nome do usuário
+          example: Example
+          required: true
+        last_name:
+          type: string
+          description: Sobrenome do usuário
+          example: API
+          required: true
+        email:
+          type: string
+          description: Email do usuário
+          example: example@example.com
+          required: true
+        document:
+          type: string
+          description: Documento do usuário (CPF ou CNPJ)
+          example: '12345678901'
+          required: true
+        profile:
+          type: string
+          description: Tipo de usuário (user ou retailer)
+          example: user
+          required: true
+        password:
+          type: string
+          description: Senha do usuário
+          example: '98763541'
+          required: true
+        password_confirmation:
+          type: string
+          description: Confirmação de senha
+          example: '98763541'
+          required: true
+
+    UserResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: Id da transação
+          required: true
+        first_name:
+          type: string
+          description: Nome do usuário
+          required: true
+        last_name:
+          type: string
+          description: Sobrenome do usuário
+          required: true
+        profile:
+          type: string
+          description: Tipo do usuário (user ou retailer)
+          required: true
+        email:
+          type: string
+          description: Email do usuário
+          required: true
+        document:
+          type: string
+          description: Documento do usuário (CPF ou CNPJ)
+          required: true
+        email_verified_at:
+          type: string
+          description: Email verificado
+          required: true
+        deleted_at:
+          type: string
+          description: Usuario deletado
+          required: true
+        full_name:
+          type: string
+          description: Nome Completo do usuário
+          required: true
+
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email do usuário
+          example: example@example.com
+          required: true
+        password:
+          type: string
+          description: Senha do usuário
+          example: '98763541'
+          required: true
